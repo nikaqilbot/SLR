@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+        setTimeout(function(){
+            window.location.href = '{{ url_for("assess") }}';
+        }, 5000);
+    </script>
+        <h1>{% block title %} Processing Error {% endblock %}</h1>
+        <p style="color: red; font-size: 30px;">OOOOPS! Please follow the process as defined!</p>
+
+        <p style="color: blue; font-size: 25px;">You will be redirected in a while!</p>
+{% endblock %}

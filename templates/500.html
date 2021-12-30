@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+        setTimeout(function(){
+            window.location.href = '{{ url_for("planning_2") }}';
+        }, 5000);
+    </script>
+        <h1>{% block title %} 500 Internal Server Error {% endblock %}</h1>
+        <p>OOOOPS! Something went wrong on the server.</p>
+
+        <p style="color: red; font-size: 20px;">You will be redirected in a while!</p>
+{% endblock %}
