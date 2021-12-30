@@ -46,9 +46,9 @@ def form_example():
 def json_example():
     return 'JSON Object Example'
 
-@app.route('/index')
+@app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('planning.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

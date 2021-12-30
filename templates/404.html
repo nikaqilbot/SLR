@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<script>
+        setTimeout(function(){
+            window.location.href = '{{ url_for("planning") }}';
+        }, 5000);
+    </script>
+    
         <h1>{% block title %} 404 Not Found. {% endblock %}</h1>
         <p>OOPS! SLR couldn't find your page; looks like it doesn't exist.</p>
-        <p>If you entered the URL manually, please check your spelling and try again.</p>
+        <p style="color: red; font-size: 20px;">You will be redirected in a while!</p>
 {% endblock %}
