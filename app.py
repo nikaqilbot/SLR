@@ -412,7 +412,7 @@ def upload_assess():
 @app.route('/downloader/<page>')
 def downloader (page):
     if page == 'planning':
-        path = r'static\assets\How-To-SLR.pdf'
+        path = r'static/assets/How-To-SLR.pdf'
         return send_file(path, as_attachment=True)
     if page == 'retrieve':
         filename = session.get('trained_filename', None)
