@@ -465,32 +465,32 @@ def unsupervised():
 
 @app.route('/LDA')
 def LDA():
-    try:
-        cleaned_file = session.get('cleaned_file', None)
-        component = session.get('topic', None)
+    # try:
+    cleaned_file = session.get('cleaned_file', None)
+    component = session.get('topic', None)
 
-        dfAll = pd.read_excel(os.path.join(uploads_dir, cleaned_file))
-        cv = CountVectorizer(max_df = 0.9, min_df=2)
-        documents = dfAll['Abstract'].values
-        dtm = cv.fit_transform(documents)
-        LDA = LatentDirichletAllocation(n_components=int(component), random_state=42, verbose=1)
-        LDA.fit(dtm)
+    dfAll = pd.read_excel(os.path.join(uploads_dir, cleaned_file))
+    cv = CountVectorizer(max_df = 0.9, min_df=2)
+    documents = dfAll['Abstract'].values
+    dtm = cv.fit_transform(documents)
+    LDA = LatentDirichletAllocation(n_components=int(component), random_state=42, verbose=1)
+    LDA.fit(dtm)
 
-        topics = LDA.transform(dtm)
-        dfAll['Topics'] = topics.argmax(axis = 1)
-        df_new = dfAll[['Publication Year', 'Article Title', 'Authors', 'Abstract', 'Topics']].copy()
-        df_new.rename(columns={'Publication Year': 'Year'}, inplace=True)
-        df_new.rename(columns={'Article Title': 'Title'}, inplace=True)
-        df_new.index.name = 'Index'
-        trained_filename = cleaned_file.replace('.xls', '') + '_trained.xlsx'
-        df_new.to_excel(os.path.join(uploads_dir, trained_filename))
+    topics = LDA.transform(dtm)
+    dfAll['Topics'] = topics.argmax(axis = 1)
+    df_new = dfAll[['Publication Year', 'Article Title', 'Authors', 'Abstract', 'Topics']].copy()
+    df_new.rename(columns={'Publication Year': 'Year'}, inplace=True)
+    df_new.rename(columns={'Article Title': 'Title'}, inplace=True)
+    df_new.index.name = 'Index'
+    trained_filename = cleaned_file.replace('.xls', '') + '_trained.xlsx'
+    df_new.to_excel(os.path.join(uploads_dir, trained_filename))
 
-        session['trained_filename'] = trained_filename
+    session['trained_filename'] = trained_filename
 
-        return redirect(url_for('retrieve_output'))
+    return redirect(url_for('retrieve_output'))
 
-    except Exception as e:
-        return(redirect(url_for('error_uc')))
+    # except Exception as e:
+    #     return(redirect(url_for('error_uc')))
 
 @app.route('/filter')
 def filter():
