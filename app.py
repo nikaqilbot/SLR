@@ -1,4 +1,3 @@
-# import main Flask class and request object
 from genericpath import exists
 from logging import exception
 from flask import Flask, request, redirect, url_for, render_template, session, send_file, flash, abort
@@ -24,7 +23,7 @@ import secrets
 secret_string = secrets.token_urlsafe(16)
 app.secret_key = secret_string
 
-nlp = spacy.load(r"en_core_web_sm")
+nlp = spacy.load(r"en_core_web_lg")
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
@@ -427,14 +426,21 @@ def downloader (page):
         zipf = zipfile.ZipFile('Synthesis.zip','w', zipfile.ZIP_DEFLATED)
         for root,dirs, files in os.walk(downloads_dir + '/'):
             for file in files:
-                zipf.write(os.path.join(downloads_dir, file))
-                print('delete: ', os.path.join(downloads_dir), file)
-                os.remove(os.path.join(downloads_dir, file))
+                # print('delete: ', os.path.join(downloads_dir), file)
+                if not file == '.gitkeep':
+                    zipf.write(os.path.join(downloads_dir, file))
+                    os.remove(os.path.join(downloads_dir, file))
         zipf.close()
         for root,dirs, files in os.walk(uploads_dir + '/'):
             for file in files:
-                print('delete: ', os.path.join(uploads_dir, file))
-                os.remove(os.path.join(uploads_dir, file))
+                # print('delete: ', os.path.join(uploads_dir, file))
+                if not file == '.gitkeep':
+                    os.remove(os.path.join(uploads_dir, file))
+        for root,dirs, files in os.walk(r'static\assets\img' + '/'):
+            for file in files:
+                # print('delete: ', os.path.join(uploads_dir, file))
+                if not file == 'desktop.ini':
+                    os.remove(os.path.join(r'static\assets\img', file))
         for key in list(session.keys()):
             print(key)
             session.pop(key)
