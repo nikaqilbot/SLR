@@ -315,57 +315,57 @@ def extract():
 
 @app.route('/uploader/<page>', methods = ['GET', 'POST'])
 def uploader(page):
-    # try:
-    if request.method == 'POST':
-        files = request.files.getlist('file')
-        for f in files:
-            f.save(os.path.join(uploads_dir, secure_filename(f.filename)))
+    try:
+        if request.method == 'POST':
+            files = request.files.getlist('file')
+            for f in files:
+                f.save(os.path.join(uploads_dir, secure_filename(f.filename)))
 
-        if page == 'retrieve':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_retrieve'))
-        elif page == 'filter':
-            session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
-            session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
-            return redirect(url_for('upload_filter'))
-        elif page == 'assess':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess'))
-        elif page == 'assess-retrieve':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess_retrieve'))
-        elif page == 'assess-filter':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess_filter'))
-        else:
-            return redirect(url_for('planning'))
-    # except Exception as e:
-    #     return redirect(url_for('error_upload'))
+            if page == 'retrieve':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_retrieve'))
+            elif page == 'filter':
+                session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
+                session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+                return redirect(url_for('upload_filter'))
+            elif page == 'assess':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess'))
+            elif page == 'assess-retrieve':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess_retrieve'))
+            elif page == 'assess-filter':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess_filter'))
+            else:
+                return redirect(url_for('planning'))
+    except Exception as e:
+        return redirect(url_for('error_upload'))
                 
 @app.route('/upload-retrieve', methods = ['GET', 'POST'])
 def upload_retrieve():
-    try:
-        filename = session.get('filename', None)
+    # try:
+    filename = session.get('filename', None)
 
-        dfAll = pd.read_excel(os.path.join(uploads_dir, filename))
-        initial = int(dfAll.shape[0])
-        miss_year = int(dfAll['Publication Year'].isnull().sum())
-        miss_title = int(dfAll['Article Title'].isnull().sum())
-        miss_abstract = int(dfAll['Abstract'].isnull().sum())
-        missing = miss_year + miss_title + miss_abstract
-        cleaned = initial - missing
+    dfAll = pd.read_excel(os.path.join(uploads_dir, filename))
+    initial = int(dfAll.shape[0])
+    miss_year = int(dfAll['Publication Year'].isnull().sum())
+    miss_title = int(dfAll['Article Title'].isnull().sum())
+    miss_abstract = int(dfAll['Abstract'].isnull().sum())
+    missing = miss_year + miss_title + miss_abstract
+    cleaned = initial - missing
 
-        dfAll = dfAll[dfAll['Publication Year'].notna()].copy()
-        dfAll = dfAll[dfAll['Article Title'].notna()].copy()
-        dfAll = dfAll[dfAll['Abstract'].notna()].copy()
-        dfAll.to_excel(uploads_dir + '/' + 'cleaned_' + filename, index = False)
+    dfAll = dfAll[dfAll['Publication Year'].notna()].copy()
+    dfAll = dfAll[dfAll['Article Title'].notna()].copy()
+    dfAll = dfAll[dfAll['Abstract'].notna()].copy()
+    dfAll.to_excel(uploads_dir + '/' + 'cleaned_' + filename, index = False)
 
-        session['cleaned_tuple'] = (initial, miss_year, miss_title, miss_abstract, missing, cleaned)
-        session['cleaned_file'] = 'cleaned_' + filename
+    session['cleaned_tuple'] = (initial, miss_year, miss_title, miss_abstract, missing, cleaned)
+    session['cleaned_file'] = 'cleaned_' + filename
 
-        return redirect(url_for('retrieve'))
-    except Exception as e:
-        return redirect(url_for('error_uc'))
+    return redirect(url_for('retrieve'))
+    # except Exception as e:
+    #     return redirect(url_for('error_uc'))
 
 @app.route('/upload-filter', methods = ['GET', 'POST'])
 def upload_filter():
