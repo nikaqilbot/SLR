@@ -83,22 +83,22 @@
           {% block content %}
             {% if visual_exists %}
             <p class="selection-title">Word Cloud - Objective</p>
-            <img src="{{ image_path[2] }}" class="rounded mx-auto d-block" alt="...">
+            <img src="{{ image_path[2][14:] }}" class="rounded mx-auto d-block" alt="...">
             <br>
             <p class="selection-title">Word Cloud - Method</p>
-            <img src="{{ image_path[3] }}" class="rounded mx-auto d-block" alt="...">
+            <img src="{{ image_path[3][14:] }}" class="rounded mx-auto d-block" alt="...">
             <br>
             <p class="selection-title">Word Cloud - Result</p>
-            <img src="{{ image_path[4] }}" class="rounded mx-auto d-block" alt="...">
+            <img src="{{ image_path[4][14:] }}" class="rounded mx-auto d-block" alt="...">
             <br>
 
             <p class="selection-title">By Year</p>
             <div class="row">
               <div class="col-md-6">
-                <img src="{{ url_for('static', filename=image_path[0]) }}" alt="" style="width:100%">
+                <img src="{{ image_path[0][14:] }}" alt="" style="width:100%">
               </div>
               <div class="col-md-6">
-                <img src="static/assets/img/SLR-Prototype_-_Dataset_predict_2_pie.png" alt="" style="width:100%">
+                <img src="{{ image_path[1][14:] }}" alt="" style="width:100%">
               </div>
             </div>
             {% endif %}
