@@ -170,7 +170,7 @@
 
          <p>Topic extraction algorithms do not require any training data (i.e., no document annotation is needed), 
             and are designed for rapid assessments to discover the major topics in a document collection.</p>
-          <form action="http://localhost:5000/supervised">
+          <form action="{{ url_for('supervised') }}">
             <div class="form-group">
               <label for="inputSupervisedTechnique">Select supervised technique:</label>
               <select class="form-control" id="inputSupervisedTechnique" name="inputSupervisedTechnique">
