@@ -425,7 +425,7 @@ def downloader (page):
         path = os.path.join(uploads_dir, filename)
         return send_file(path, as_attachment=True)
     elif page == 'synthesis':
-        zipf = zipfile.ZipFile('Synthesis.zip','w', zipfile.ZIP_DEFLATED)
+        zipf = zipfile.ZipFile('/home/slr/SLR/static/Synthesis.zip','w', zipfile.ZIP_DEFLATED)
         for root,dirs, files in os.walk(downloads_dir + '/'):
             for file in files:
                 # print('delete: ', os.path.join(downloads_dir), file)
