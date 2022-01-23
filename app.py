@@ -18,7 +18,7 @@ import spacy
 import zipfile
 
 # create the Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="static")
 
 import secrets
 secret_string = secrets.token_urlsafe(16)
