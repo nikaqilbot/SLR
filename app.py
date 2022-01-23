@@ -23,11 +23,12 @@ import secrets
 secret_string = secrets.token_urlsafe(16)
 app.secret_key = secret_string
 
-nlp = spacy.load(r"en_core_web_sm")
+nlp = spacy.load(r"en_core_web_lg")
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
+img_dir = r'static/assets/img'
 
 @app.route('/query-example')
 def query_example():
@@ -436,11 +437,11 @@ def downloader (page):
                 # print('delete: ', os.path.join(uploads_dir, file))
                 if not file == '.gitkeep':
                     os.remove(os.path.join(uploads_dir, file))
-        for root,dirs, files in os.walk(r'static\assets\img' + '/'):
+        for root,dirs, files in os.walk(img_dir + '/'):
             for file in files:
                 # print('delete: ', os.path.join(uploads_dir, file))
                 if not file == 'desktop.ini':
-                    os.remove(os.path.join(r'static\assets\img', file))
+                    os.remove(os.path.join(img_dir, file))
         for key in list(session.keys()):
             print(key)
             session.pop(key)
@@ -571,22 +572,21 @@ def synthesis():
     visual_exists = False
     image_path = ()
     if(session.get('pie_file', None)):
-        imgpath = r'static\assets\img'
 
         pie_file = session.get('pie_file', None)
-        pie_path = os.path.join(imgpath, pie_file)
+        pie_path = os.path.join(img_dir, pie_file)
 
         bar_file = session.get('bar_file', None)
-        bar_path = os.path.join(imgpath, bar_file)
+        bar_path = os.path.join(img_dir, bar_file)
 
         obj_cloud_file = session.get('obj_cloud_file', None)
-        obj_cloud_path = os.path.join(imgpath, obj_cloud_file)
+        obj_cloud_path = os.path.join(img_dir, obj_cloud_file)
 
         met_cloud_file = session.get('met_cloud_file', None)
-        met_cloud_file = os.path.join(imgpath, met_cloud_file)
+        met_cloud_file = os.path.join(img_dir, met_cloud_file)
 
         res_cloud_file = session.get('res_cloud_file', None)
-        res_cloud_file = os.path.join(imgpath, res_cloud_file)
+        res_cloud_file = os.path.join(img_dir, res_cloud_file)
 
         image_path = (pie_path, bar_path, obj_cloud_path, met_cloud_file, res_cloud_file)
         visual_exists = True
@@ -617,7 +617,7 @@ def visualise():
         pie_file = extracted_2_filename.replace('.csv', '') + '_pie.png'
 
     session['pie_file'] = pie_file
-    plt.savefig('static\\assets\img\\' + pie_file, box_inches = 'tight')
+    plt.savefig(os.path.join(img_dir, pie_file), box_inches = 'tight')
     plt.savefig(os.path.join(downloads_dir, pie_file), box_inches = 'tight')
 
     plt.figure()
@@ -630,7 +630,7 @@ def visualise():
         bar_file = extracted_2_filename.replace('.csv', '') + '_bar.png'
 
     session['bar_file'] = bar_file
-    plt.savefig('static\\assets\img\\' + bar_file, box_inches = 'tight')
+    plt.savefig(os.path.join(img_dir, bar_file), box_inches = 'tight')
     plt.savefig(os.path.join(downloads_dir, bar_file), box_inches = 'tight')
 
     comment_words = ''
@@ -662,7 +662,7 @@ def visualise():
     elif extracted_2_filename.split('.')[1] == 'csv':
         obj_cloud_file = extracted_2_filename.replace('.csv', '') + '_obj_cloud.png'
 
-    plt.savefig('static\\assets\img\\' + obj_cloud_file, box_inches = 'tight')
+    plt.savefig(os.path.join(img_dir, obj_cloud_file), box_inches = 'tight')
     plt.savefig(os.path.join(downloads_dir, obj_cloud_file), box_inches = 'tight')
 
     df_met = df.dropna(subset=['Method'])
@@ -692,7 +692,7 @@ def visualise():
     elif extracted_2_filename.split('.')[1] == 'csv':
         met_cloud_file = extracted_2_filename.replace('.csv', '') + '_met_cloud.png'
 
-    plt.savefig('static\\assets\img\\' + met_cloud_file, box_inches = 'tight')
+    plt.savefig(os.path.join(img_dir, met_cloud_file), box_inches = 'tight')
     plt.savefig(os.path.join(downloads_dir, met_cloud_file), box_inches = 'tight')
 
     df_res = df.dropna(subset=['Result'])
@@ -727,7 +727,7 @@ def visualise():
     elif extracted_2_filename.split('.')[1] == 'csv':
         res_cloud_file = extracted_2_filename.replace('.csv', '') + '_res_cloud.png'
 
-    plt.savefig('static\\assets\img\\' + res_cloud_file, box_inches = 'tight')
+    plt.savefig(os.path.join(img_dir, res_cloud_file), box_inches = 'tight')
     plt.savefig(os.path.join(downloads_dir, res_cloud_file), box_inches = 'tight')
             
     session['obj_cloud_file'] = obj_cloud_file
