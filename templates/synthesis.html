@@ -105,7 +105,7 @@
           {% endblock content %}
 
           <div class="text-center">
-            <a class="btn btn-dark next-btn" href="{{ url_for('downloader', page='synthesis') }}" role="button">Download</a>
+            <a class="btn btn-dark next-btn" onclick="return goBack();" role="button">Download</a>
         </div>
 
 
@@ -115,6 +115,15 @@
   </main><!-- End #main -->
 
   <!-- Vendor JS Files -->
+<script>
+  function goBack() {
+    window.location.href = "{{ url_for('downloader', page='synthesis') }}";
+    setTimeout(function(){
+            window.location.href = '{{ url_for("planning") }}';
+        }, 1000);
+  }
+  </script>
+
   <script src="static/assets/vendor/jquery/jquery.min.js"></script>
   <script src="static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="static/assets/vendor/jquery.easing/jquery.easing.min.js"></script>

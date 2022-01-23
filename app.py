@@ -1,6 +1,3 @@
-
-######## 921 lines to 749 lines !!!
-
 # import main Flask class and request object
 from genericpath import exists
 from logging import exception
@@ -276,99 +273,99 @@ def extract_2():
 
 @app.route('/extract')
 def extract():
-    # try:
-    filename = session.get('filename', None)
-    assessed_file = session.get('assessed_file', None)
+    try:
+        filename = session.get('filename', None)
+        assessed_file = session.get('assessed_file', None)
 
-    if assessed_file.split('.')[1] == 'xlsx':
-        df = pd.read_excel(os.path.join(uploads_dir, filename))
-    elif assessed_file.split('.')[1] == 'csv':
-        df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
+        if assessed_file.split('.')[1] == 'xlsx':
+            df = pd.read_excel(os.path.join(uploads_dir, filename))
+        elif assessed_file.split('.')[1] == 'csv':
+            df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
 
-    df = df[df['Relevant'] == 1]
-    df[['Objective', 'Method', 'Result']] = ''
+        df = df[df['Relevant'] == 1]
+        df[['Objective', 'Method', 'Result']] = ''
 
-    for index in df.index:
-        doc = nlp(str(df['Abstract'][index]))
-        obj, met, res = '', '', ''
-        for each in doc.sents:
-            for i in range(len(each)):
-                if str(each[i].lemma_) in ['analyze', 'objective', 'purpose', 'propose']:
-                    obj += str(each)
-                elif str(each[i].lemma_) in ['approach', 'method', 'use']:
-                    met += str(each)
-                elif str(each[i].lemma_) in ['result', 'outcome']:
-                    res += str(each)
+        for index in df.index:
+            doc = nlp(str(df['Abstract'][index]))
+            obj, met, res = '', '', ''
+            for each in doc.sents:
+                for i in range(len(each)):
+                    if str(each[i].lemma_) in ['analyze', 'objective', 'purpose', 'propose']:
+                        obj += str(each)
+                    elif str(each[i].lemma_) in ['approach', 'method', 'use']:
+                        met += str(each)
+                    elif str(each[i].lemma_) in ['result', 'outcome']:
+                        res += str(each)
 
-        df['Objective'][index] = obj
-        df['Method'][index] = met
-        df['Result'][index] = res
+            df['Objective'][index] = obj
+            df['Method'][index] = met
+            df['Result'][index] = res
 
-    extracted_filename = filename.replace('assessed', 'extracted')
-    if assessed_file.split('.')[1] == 'xlsx':
-        df.to_excel(os.path.join(uploads_dir, extracted_filename), index = False)
-    elif assessed_file.split('.')[1] == 'csv':
-        df.to_csv(os.path.join(uploads_dir, extracted_filename), index = False)
+        extracted_filename = filename.replace('assessed', 'extracted')
+        if assessed_file.split('.')[1] == 'xlsx':
+            df.to_excel(os.path.join(uploads_dir, extracted_filename), index = False)
+        elif assessed_file.split('.')[1] == 'csv':
+            df.to_csv(os.path.join(uploads_dir, extracted_filename), index = False)
 
-    session['extracted_filename'] = extracted_filename
+        session['extracted_filename'] = extracted_filename
 
-    return redirect(url_for('extraction'))
-    # except Exception as e:
-    #     return redirect(url_for('error_assess'))
+        return redirect(url_for('extraction'))
+    except Exception as e:
+        return redirect(url_for('error_assess'))
 
 @app.route('/uploader/<page>', methods = ['GET', 'POST'])
 def uploader(page):
-    # try:
-    if request.method == 'POST':
-        files = request.files.getlist('file')
-        for f in files:
-            f.save(os.path.join(uploads_dir, secure_filename(f.filename)))
+    try:
+        if request.method == 'POST':
+            files = request.files.getlist('file')
+            for f in files:
+                f.save(os.path.join(uploads_dir, secure_filename(f.filename)))
 
-        if page == 'retrieve':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_retrieve'))
-        elif page == 'filter':
-            session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
-            session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
-            return redirect(url_for('upload_filter'))
-        elif page == 'assess':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess'))
-        elif page == 'assess-retrieve':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess_retrieve'))
-        elif page == 'assess-filter':
-            session['filename'] = request.files.getlist('file')[0].filename
-            return redirect(url_for('upload_assess_filter'))
-        else:
-            return redirect(url_for('planning'))
-    # except Exception as e:
-    #     return redirect(url_for('error_upload'))
+            if page == 'retrieve':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_retrieve'))
+            elif page == 'filter':
+                session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
+                session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+                return redirect(url_for('upload_filter'))
+            elif page == 'assess':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess'))
+            elif page == 'assess-retrieve':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess_retrieve'))
+            elif page == 'assess-filter':
+                session['filename'] = request.files.getlist('file')[0].filename
+                return redirect(url_for('upload_assess_filter'))
+            else:
+                return redirect(url_for('planning'))
+    except Exception as e:
+        return redirect(url_for('error_upload'))
                 
 @app.route('/upload-retrieve', methods = ['GET', 'POST'])
 def upload_retrieve():
-    # try:
-    filename = session.get('filename', None)
+    try:
+        filename = session.get('filename', None)
 
-    dfAll = pd.read_excel(os.path.join(uploads_dir, filename))
-    initial = int(dfAll.shape[0])
-    miss_year = int(dfAll['Publication Year'].isnull().sum())
-    miss_title = int(dfAll['Article Title'].isnull().sum())
-    miss_abstract = int(dfAll['Abstract'].isnull().sum())
-    missing = miss_year + miss_title + miss_abstract
-    cleaned = initial - missing
+        dfAll = pd.read_excel(os.path.join(uploads_dir, filename))
+        initial = int(dfAll.shape[0])
+        miss_year = int(dfAll['Publication Year'].isnull().sum())
+        miss_title = int(dfAll['Article Title'].isnull().sum())
+        miss_abstract = int(dfAll['Abstract'].isnull().sum())
+        missing = miss_year + miss_title + miss_abstract
+        cleaned = initial - missing
 
-    dfAll = dfAll[dfAll['Publication Year'].notna()].copy()
-    dfAll = dfAll[dfAll['Article Title'].notna()].copy()
-    dfAll = dfAll[dfAll['Abstract'].notna()].copy()
-    dfAll.to_excel(uploads_dir + '/' + 'cleaned_' + filename, index = False)
+        dfAll = dfAll[dfAll['Publication Year'].notna()].copy()
+        dfAll = dfAll[dfAll['Article Title'].notna()].copy()
+        dfAll = dfAll[dfAll['Abstract'].notna()].copy()
+        dfAll.to_excel(uploads_dir + '/' + 'cleaned_' + filename, index = False)
 
-    session['cleaned_tuple'] = (initial, miss_year, miss_title, miss_abstract, missing, cleaned)
-    session['cleaned_file'] = 'cleaned_' + filename
+        session['cleaned_tuple'] = (initial, miss_year, miss_title, miss_abstract, missing, cleaned)
+        session['cleaned_file'] = 'cleaned_' + filename
 
-    return redirect(url_for('retrieve'))
-    # except Exception as e:
-    #     return redirect(url_for('error_uc'))
+        return redirect(url_for('retrieve'))
+    except Exception as e:
+        return redirect(url_for('error_uc'))
 
 @app.route('/upload-filter', methods = ['GET', 'POST'])
 def upload_filter():
@@ -393,28 +390,25 @@ def upload_filter():
 
 @app.route('/upload-assess', methods = ['GET', 'POST'])
 def upload_assess():
-    # try:
-    filename = session.get('filename', None)
-    
-    assessed_file = ''
-    if filename.split('.')[1] == 'xlsx':
-        df = pd.read_excel(os.path.join(uploads_dir, filename))
-        assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
-        df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
-    elif filename.split('.')[1] == 'csv':
-        df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
-        assessed_file = filename.replace('.csv', '_assessed.csv')
-        df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
-    else:
-        flash('hahahhahhaha')
-        return redirect(url_for('planning'))
+    try:
+        filename = session.get('filename', None)
+        
+        assessed_file = ''
+        if filename.split('.')[1] == 'xlsx':
+            df = pd.read_excel(os.path.join(uploads_dir, filename))
+            assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
+            df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
+        elif filename.split('.')[1] == 'csv':
+            df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
+            assessed_file = filename.replace('.csv', '_assessed.csv')
+            df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
 
-    session['assessed_file'] = assessed_file
+        session['assessed_file'] = assessed_file
 
-    return redirect(url_for('assess'))
+        return redirect(url_for('assess'))
      
-    # except Exception as e:
-    #     return redirect(url_for('error_assess'))
+    except Exception as e:
+        return redirect(url_for('error_assess'))
 
 @app.route('/downloader/<page>')
 def downloader (page):
@@ -434,7 +428,16 @@ def downloader (page):
         for root,dirs, files in os.walk(downloads_dir + '/'):
             for file in files:
                 zipf.write(os.path.join(downloads_dir, file))
+                print('delete: ', os.path.join(downloads_dir), file)
+                os.remove(os.path.join(downloads_dir, file))
         zipf.close()
+        for root,dirs, files in os.walk(uploads_dir + '/'):
+            for file in files:
+                print('delete: ', os.path.join(uploads_dir, file))
+                os.remove(os.path.join(uploads_dir, file))
+        for key in list(session.keys()):
+            print(key)
+            session.pop(key)
         return send_file('Synthesis.zip',
             mimetype = 'zip',
             attachment_filename= 'Synthesis.zip',
