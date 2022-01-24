@@ -324,7 +324,7 @@ def uploader(page):
                 f.save(os.path.join(uploads_dir, secure_filename(f.filename)))
 
             if page == 'retrieve':
-                session['filename'] = request.files.getlist('file')[0].filename
+                session['filename'] = secure_filename(request.files.getlist('file')[0].filename)
                 return redirect(url_for('upload_retrieve'))
             elif page == 'filter':
                 session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
@@ -445,7 +445,7 @@ def downloader (page):
         for key in list(session.keys()):
             print(key)
             session.pop(key)
-        return send_file('Synthesis.zip',
+        return send_file('/home/slr/SLR/static/Synthesis.zip',
             mimetype = 'zip',
             attachment_filename= 'Synthesis.zip',
             as_attachment = True)
