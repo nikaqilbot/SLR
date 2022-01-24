@@ -397,7 +397,7 @@ def upload_assess():
             df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
         elif filename.split('.')[1] == 'csv':
             print('cibaiiiiiiii: ')
-            df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
+            df = pd.read_csv(os.path.join(uploads_dir, filename))
             print('pukiiiiiiiii: ')
             assessed_file = filename.replace('.csv', '_assessed.csv')
             print('koteeeeeeeee: ')
