@@ -386,30 +386,30 @@ def upload_filter():
 
 @app.route('/upload-assess', methods = ['GET', 'POST'])
 def upload_assess():
-    try:
-        filename = session.get('filename', None)
-        
-        assessed_file = ''
-        print('hanatttttttt: ')
-        if filename.split('.')[1] == 'xlsx':
-            df = pd.read_excel(os.path.join(uploads_dir, filename))
-            assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
-            df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
-        elif filename.split('.')[1] == 'csv':
-            print('cibaiiiiiiii: ')
-            df = pd.read_csv(os.path.join(uploads_dir, filename))
-            print('pukiiiiiiiii: ')
-            assessed_file = filename.replace('.csv', '_assessed.csv')
-            print('koteeeeeeeee: ')
-            df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
-            print('butooooooooo: ')
+    # try:
+    filename = session.get('filename', None)
+    
+    assessed_file = ''
+    print('test1: ')
+    if filename.split('.')[1] == 'xlsx':
+        df = pd.read_excel(os.path.join(uploads_dir, filename))
+        assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
+        df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
+    elif filename.split('.')[1] == 'csv':
+        print('test2: ')
+        df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
+        print('test3: ')
+        assessed_file = filename.replace('.csv', '_assessed.csv')
+        print('test4: ')
+        df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
+        print('test5: ')
 
-        session['assessed_file'] = assessed_file
+    session['assessed_file'] = assessed_file
 
-        return redirect(url_for('assess'))
+    return redirect(url_for('assess'))
      
-    except Exception as e:
-        return redirect(url_for('error_assess'))
+    # except Exception as e:
+    #     return redirect(url_for('error_assess'))
 
 @app.route('/downloader/<page>')
 def downloader (page):
