@@ -331,7 +331,7 @@ def uploader(page):
                 session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
                 return redirect(url_for('upload_filter'))
             elif page == 'assess':
-                session['filename'] = request.files.getlist('file')[0].filename
+                session['filename'] = secure_filename(request.files.getlist('file')[0].filename)
                 return redirect(url_for('upload_assess'))
             else:
                 return redirect(url_for('planning'))
@@ -386,9 +386,9 @@ def upload_filter():
 
 @app.route('/upload-assess', methods = ['GET', 'POST'])
 def upload_assess():
-    # try:
+    try:
         filename = session.get('filename', None)
-        
+
         assessed_file = ''
         print('test1: ')
         if filename.split('.')[1] == 'xlsx':
@@ -407,8 +407,8 @@ def upload_assess():
 
         return redirect(url_for('assess'))
      
-    # except Exception as e:
-    #     return redirect(url_for('error_assess'))
+    except Exception as e:
+        return redirect(url_for('error_assess'))
 
 @app.route('/downloader/<page>')
 def downloader (page):
