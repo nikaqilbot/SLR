@@ -10,6 +10,7 @@ from pandas import *
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
 os.environ['MPLCONFIGDIR'] = os.getcwd() + "/configs/"
 import matplotlib.pyplot as plt
 import numpy as np
@@ -461,37 +462,35 @@ def unsupervised():
     session['topic'] = topic
     if technique == 'LDA':
         return redirect(url_for('LDA'))
-    elif technique == 'KNN':
-        return redirect(url_for('KNN'))
 
 @app.route('/LDA')
 def LDA():
-    # try:
-    cleaned_file = session.get('cleaned_file', None)
-    component = session.get('topic', None)
+    try:
+        cleaned_file = session.get('cleaned_file', None)
+        component = session.get('topic', None)
 
-    dfAll = pd.read_excel(os.path.join(uploads_dir, cleaned_file))
-    cv = CountVectorizer(max_df = 0.9, min_df=2)
-    documents = dfAll['Abstract'].values
-    dtm = cv.fit_transform(documents)
-    LDA = LatentDirichletAllocation(n_components=int(component), random_state=42, verbose=1)
-    LDA.fit(dtm)
+        dfAll = pd.read_excel(os.path.join(uploads_dir, cleaned_file))
+        cv = CountVectorizer(max_df = 0.9, min_df=2)
+        documents = dfAll['Abstract'].values
+        dtm = cv.fit_transform(documents)
+        LDA = LatentDirichletAllocation(n_components=int(component), random_state=42, verbose=1)
+        LDA.fit(dtm)
 
-    topics = LDA.transform(dtm)
-    dfAll['Topics'] = topics.argmax(axis = 1)
-    df_new = dfAll[['Publication Year', 'Article Title', 'Authors', 'Abstract', 'Topics']].copy()
-    df_new.rename(columns={'Publication Year': 'Year'}, inplace=True)
-    df_new.rename(columns={'Article Title': 'Title'}, inplace=True)
-    df_new.index.name = 'Index'
-    trained_filename = cleaned_file.replace('.xls', '') + '_trained.xlsx'
-    df_new.to_excel(os.path.join(uploads_dir, trained_filename))
+        topics = LDA.transform(dtm)
+        dfAll['Topics'] = topics.argmax(axis = 1)
+        df_new = dfAll[['Publication Year', 'Article Title', 'Authors', 'Abstract', 'Topics']].copy()
+        df_new.rename(columns={'Publication Year': 'Year'}, inplace=True)
+        df_new.rename(columns={'Article Title': 'Title'}, inplace=True)
+        df_new.index.name = 'Index'
+        trained_filename = cleaned_file.replace('.xls', '') + '_trained.xlsx'
+        df_new.to_excel(os.path.join(uploads_dir, trained_filename))
 
-    session['trained_filename'] = trained_filename
+        session['trained_filename'] = trained_filename
 
-    return redirect(url_for('retrieve_output'))
+        return redirect(url_for('retrieve_output'))
 
-    # except Exception as e:
-    #     return(redirect(url_for('error_uc')))
+    except Exception as e:
+        return(redirect(url_for('error_uc')))
 
 @app.route('/filter')
 def filter():
@@ -503,8 +502,8 @@ def supervised():
     session['technique'] = technique
     if technique == 'RF':
         return redirect(url_for('RF'))
-    elif technique == 'KNN':
-        return redirect(url_for('KNN'))
+    elif technique == 'NB':
+        return redirect(url_for('NB'))
 
 @app.route('/RF')
 def RF():
@@ -553,6 +552,55 @@ def RF():
 
     except Exception as e:
         return(redirect(url_for('error_sml')))
+
+@app.route('/NB')
+def NB():
+    try:
+        input_file = session.get('input_file', None)
+        training_file = session.get('training_file', None)
+
+        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
+        X = dfInput.iloc[:, :-1]
+        y = dfInput.iloc[:, -1]
+
+        cv = CountVectorizer()
+        X['Abstract'].fillna(' ', inplace=True)
+        X_Abstract = cv.fit_transform(X['Abstract'])
+        X['Authors'].fillna(' ', inplace=True)
+        X_Authors = cv.fit_transform(X['Authors'])
+
+        feat_arr = []
+        feat_arr = np.append(X_Abstract.toarray(), X_Authors.toarray(), 1)
+        classifier = GaussianNB()
+        classifier.fit(feat_arr, y)
+
+        dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        X2 = dfInput.iloc[:, :-1]
+        y2 = dfInput.iloc[:, -1]
+
+        X2['Abstract'].fillna(' ', inplace=True)
+        X2_Abstract = cv.fit_transform(X2['Abstract'])
+        X2['Authors'].fillna(' ', inplace=True)
+        X2_Authors = cv.fit_transform(X2['Authors'])
+
+        feat_arr_2 = []
+        feat_arr_2 = np.append(X2_Abstract.toarray(), X2_Authors.toarray(), 1)
+        predict = classifier.predict(feat_arr_2)
+
+        predict_df = X2.copy()
+        predict_df['Predict'] = predict
+        predict_df = predict_df[predict_df['Predict'] == 1]
+        predict_df.index.name = 'Index'
+        predict_file = training_file.replace('training', 'predict')
+        predict_df.to_csv(os.path.join(uploads_dir, predict_file))
+        
+        session['predict_filename'] = predict_file
+
+        return redirect(url_for('filter_output'))
+
+    except Exception as e:
+        return(redirect(url_for('error_sml')))
+
 
 @app.route('/filter-output')
 def filter_output():
