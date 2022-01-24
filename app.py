@@ -390,15 +390,19 @@ def upload_assess():
         filename = session.get('filename', None)
         
         assessed_file = ''
-        print('cibaiiiiiiii: ')
+        print('hanatttttttt: ')
         if filename.split('.')[1] == 'xlsx':
             df = pd.read_excel(os.path.join(uploads_dir, filename))
             assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
             df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
         elif filename.split('.')[1] == 'csv':
+            print('cibaiiiiiiii: ')
             df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
+            print('pukiiiiiiiii: ')
             assessed_file = filename.replace('.csv', '_assessed.csv')
+            print('koteeeeeeeee: ')
             df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
+            print('butooooooooo: ')
 
         session['assessed_file'] = assessed_file
 
