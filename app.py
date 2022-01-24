@@ -333,12 +333,6 @@ def uploader(page):
             elif page == 'assess':
                 session['filename'] = request.files.getlist('file')[0].filename
                 return redirect(url_for('upload_assess'))
-            elif page == 'assess-retrieve':
-                session['filename'] = request.files.getlist('file')[0].filename
-                return redirect(url_for('upload_assess_retrieve'))
-            elif page == 'assess-filter':
-                session['filename'] = request.files.getlist('file')[0].filename
-                return redirect(url_for('upload_assess_filter'))
             else:
                 return redirect(url_for('planning'))
     except Exception as e:
@@ -396,6 +390,7 @@ def upload_assess():
         filename = session.get('filename', None)
         
         assessed_file = ''
+        print('cibaiiiiiiii: ')
         if filename.split('.')[1] == 'xlsx':
             df = pd.read_excel(os.path.join(uploads_dir, filename))
             assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
@@ -575,7 +570,7 @@ def NB():
         classifier.fit(feat_arr, y)
 
         dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
-        X2 = dfInput.iloc[:, :-1]
+        X2 = dfInput.iloc[:, :]
         y2 = dfInput.iloc[:, -1]
 
         X2['Abstract'].fillna(' ', inplace=True)
