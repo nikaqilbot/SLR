@@ -48,7 +48,7 @@ def json_example():
 
 @app.route('/')
 def index():
-    return render_template('planning.html')
+    return render_template('home.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

@@ -37,12 +37,13 @@
   <header id="header" class="fixed-top ">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <h1 class="logo"><a href="{{ url_for('planning') }}">SLR<span>.</span></a></h1>
+      <h1 class="logo"><a href="{{ url_for('index') }}">SLR<span>.</span></a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="logo"><img src="static/assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
       <nav class="nav-menu d-none d-lg-block">
         <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
           <li><a href="{{ url_for('planning') }}">Planning</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
@@ -74,12 +75,6 @@
   <main id="main">
     <section>
       <div class="container" data-aos="fade-up">
-
-        <!-- <div class="section-title">
-          <p>Keywords and Synonyms</p>
-        </div>
-
-        <br> -->
 
         <div class="section-title">
           <p>How-To Guide</p>
@@ -135,13 +130,21 @@
           <button type="submit" class="btn btn-dark to-click-btn">Generate</button>
         </form> -->
 
-        <br>
+        <!-- <br> -->
 
         {% block content %}
           {% if string_exists %}
             <p>Search String:   {{generated_string}}</p>
           {% endif %}
         {% endblock content %}
+
+        <br><br><br>
+
+        <div class="section-title">
+          <p>Synonyms</p>
+        </div>
+        <p>Click on the button to find synonyms: </p> 
+        <a class="btn btn-dark to-click-btn" href="https://www.thesaurus.com" target="_blank" role="button">Find Synonyms</a>
 
         <br><br><br>
 
