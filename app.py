@@ -20,6 +20,7 @@ import zipfile
 
 # create the Flask app
 app = Flask(__name__, static_url_path="", static_folder="static")
+# app = Flask(__name__)
 
 import secrets
 secret_string = secrets.token_urlsafe(16)
@@ -31,6 +32,7 @@ os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
 img_dir = r'/home/slr/SLR/static/assets/img'
+# img_dir = r'/static/assets/img'
 
 @app.route('/query-example')
 def query_example():
@@ -241,10 +243,10 @@ def extract_2():
         extracted_2_filename = ''
         if extracted_filename.split('.')[1] == 'xlsx':
             df = pd.read_excel(os.path.join(uploads_dir, extracted_filename))
-            extracted_2_filename = extracted_filename.replace('.xlsx', '') + '_2.xlsx'
+            extracted_2_filename = extracted_filename.replace('.xlsx', '') + '_extracted.xlsx'
         elif extracted_filename.split('.')[1] == 'csv':
             df = pd.read_csv(os.path.join(uploads_dir, extracted_filename), encoding='latin')
-            extracted_2_filename = extracted_filename.replace('.csv', '') + '_2.csv'
+            extracted_2_filename = extracted_filename.replace('.csv', '') + '_extracted.csv'
 
         for a in df.index:
             doc_obj = nlp(str(df['Objective'][a]))
@@ -264,8 +266,10 @@ def extract_2():
 
         if extracted_filename.split('.')[1] == 'xlsx':
             df.to_excel(os.path.join(uploads_dir, extracted_2_filename), index=False)
+            df.to_excel(os.path.join(downloads_dir, extracted_2_filename), index=False)
         elif extracted_filename.split('.')[1] == 'csv':
             df.to_csv(os.path.join(uploads_dir, extracted_2_filename), index=False)
+            df.to_csv(os.path.join(downloads_dir, extracted_2_filename), index=False)
 
         session['extracted_2_filename'] = extracted_2_filename
 
