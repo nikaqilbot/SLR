@@ -437,8 +437,8 @@ def downloader (page):
         #             os.remove(os.path.join(downloads_dir, file))
         for file in os.listdir(downloads_dir + '/'):
             if not file == '.gitkeep':
-                zipf.write(os.path.join(downloads_dir, file))
-                os.remove(os.path.join(downloads_dir, file))
+                zipf.write(file)
+                os.remove(file)
         zipf.close()
         for root,dirs, files in os.walk(uploads_dir + '/'):
             for file in files:
