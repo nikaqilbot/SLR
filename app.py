@@ -429,12 +429,16 @@ def downloader (page):
         return send_file(path, as_attachment=True)
     elif page == 'synthesis':
         zipf = zipfile.ZipFile('/home/slr/SLR/static/Synthesis.zip','w', zipfile.ZIP_DEFLATED)
-        for root,dirs, files in os.walk(downloads_dir + '/'):
-            for file in files:
-                # print('delete: ', os.path.join(downloads_dir), file)
-                if not file == '.gitkeep':
-                    zipf.write(os.path.join(downloads_dir, file))
-                    os.remove(os.path.join(downloads_dir, file))
+        # for root,dirs, files in os.walk(downloads_dir + '/'):
+        #     for file in files:
+        #         # print('delete: ', os.path.join(downloads_dir), file)
+        #         if not file == '.gitkeep':
+        #             zipf.write(os.path.join(downloads_dir, file))
+        #             os.remove(os.path.join(downloads_dir, file))
+        for file in os.listdir(downloads_dir + '/'):
+            if not file == '.gitkeep':
+                zipf.write(os.path.join(downloads_dir, file))
+                os.remove(os.path.join(downloads_dir, file))
         zipf.close()
         for root,dirs, files in os.walk(uploads_dir + '/'):
             for file in files:
