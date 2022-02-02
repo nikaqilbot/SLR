@@ -429,25 +429,20 @@ def downloader (page):
         return send_file(path, as_attachment=True)
     elif page == 'synthesis':
         zipf = zipfile.ZipFile('/home/slr/SLR/static/Synthesis.zip','w', zipfile.ZIP_DEFLATED)
-        # for root,dirs, files in os.walk(downloads_dir + '/'):
-        #     for file in files:
-        #         # print('delete: ', os.path.join(downloads_dir), file)
-        #         if not file == '.gitkeep':
-        #             zipf.write(os.path.join(downloads_dir, file))
-        #             os.remove(os.path.join(downloads_dir, file))
-        for file in os.listdir(downloads_dir + '/'):
-            if not file == '.gitkeep':
-                zipf.write(os.path.join(downloads_dir, file))
-                os.remove(os.path.join(downloads_dir, file))
+        length = len(downloads_dir)
+        for root,dirs, files in os.walk(downloads_dir + '/'):
+            folder = root[length:] # path without "parent"
+            for file in files:
+                if not file == '.gitkeep':
+                    zipf.write(os.path.join(root, file), os.path.join(folder, file))
+                    os.remove(os.path.join(downloads_dir, file))
         zipf.close()
         for root,dirs, files in os.walk(uploads_dir + '/'):
             for file in files:
-                # print('delete: ', os.path.join(uploads_dir, file))
                 if not file == '.gitkeep':
                     os.remove(os.path.join(uploads_dir, file))
         for root,dirs, files in os.walk(img_dir + '/'):
             for file in files:
-                # print('delete: ', os.path.join(uploads_dir, file))
                 if not file == 'desktop.ini':
                     os.remove(os.path.join(img_dir, file))
         for key in list(session.keys()):
