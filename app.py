@@ -20,20 +20,20 @@ import spacy
 import zipfile
 
 # create the Flask app
-# app = Flask(__name__, static_url_path="", static_folder="static")
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="static")
+# app = Flask(__name__)
 
 import secrets
 secret_string = secrets.token_urlsafe(16)
 app.secret_key = secret_string
 
-nlp = spacy.load(r"en_core_web_lg")
+nlp = spacy.load(r"en_core_web_sm")
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
-# img_dir = r'/home/slr/SLR/static/assets/img'
-img_dir = r'/static/assets/img'
+img_dir = r'/home/slr/SLR/static/assets/img'
+# img_dir = r'/static/assets/img'
 
 @app.route('/query-example')
 def query_example():
