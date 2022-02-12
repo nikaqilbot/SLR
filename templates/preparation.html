@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Planning</title>
+  <title>Preparation</title>
   <meta content="" name="description">
 
   <!-- Favicons -->
@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -68,19 +69,15 @@
   </header><!-- End Header -->
 
   <div class="jumbotron jumbo">
-    <h1 class="display-4 ml-auto text-center jumbo-title">Plan The Review</h1>
-    <hr style="color: #FFE128; height: 10px; width: 400px;" class="mx-auto">
+    <h1 class="display-4 ml-auto text-center jumbo-title">PREPARATION PHASE</h1>
+    <hr style="color: #FFE128; height: 10px; width: 800px;" class="mx-auto">
+    <h6 class="display-4 ml-auto text-center jumbo-title" style="margin-top: -90px; font-size: 40px">A. PLAN THE REVIEW</h6>
   </div>
 
   <main id="main">
     <section>
       <div class="container" data-aos="fade-up">
 
-        <div class="section-title">
-          <p>How-To Guide</p>
-        </div>
-        <p>Please download the guide on how to use SLR: </p> 
-        <a class="btn btn-dark to-click-btn" href="{{ url_for('downloader', page='planning') }}" role="button">Download</a>
         <!-- <form id="generate_form" action="{{ url_for('gen_string') }}" method="post">
           <div class="form-group">
             <label for="inputTopic">Topic:</label>
@@ -130,15 +127,46 @@
           <button type="submit" class="btn btn-dark to-click-btn">Generate</button>
         </form> -->
 
-        <!-- <br> -->
+        <div class="section-title">
+          <p>1. Objectives</p>
+        </div>
+        <p style="font-style: italic;">Identification of the need for a review: </p> 
+        <p>1. </p>
+        <p>2. </p>
+        <p>3. </p>
 
-        {% block content %}
-          {% if string_exists %}
-            <p>Search String:   {{generated_string}}</p>
-          {% endif %}
-        {% endblock content %}
+        <br>
 
-        <br><br><br>
+        <div class="section-title">
+          <p>2. Research Questions</p>
+        </div>
+        <p style="font-style: italic;">Specifying the research questions to keep the review focused: </p> 
+        <p>1. </p>
+        <p>2. </p>
+        <p>3. </p>
+
+        <br>
+
+        <div class="section-title">
+          <p>3. Research Questions</p>
+        </div>
+        <p style="font-style: italic;">Identifying digital libraries for searching the studies: </p> 
+        <p>1. ISI Web of Science (htpps://www.isiknowledge.com)</p>
+        <p>2. IEEE Digital Library (https://www.ieeexplore.ieee.org)</p>
+        <p>3. Scopus (https://www.scopus.com)</p>
+        <p>4. ACM Digital Library (https://dl.acm.org)</p>
+        <p>5. ScienceDirect (https://www.sciencedirect.com)</p>
+
+        <br>
+
+        <div class="section-title">
+          <p>Keywords</p>
+        </div>
+        <p style="font-style: italic;">Enter your preffered keywords for searching the studies: </p> 
+        <p>1. </p>
+        <p>2. </p>
+
+        <br>
 
         <div class="section-title">
           <p>Synonyms</p>
@@ -149,65 +177,28 @@
         <br><br><br>
 
         <div class="section-title">
-          <p>Selection Criteria</p>
+          <p>Search Strings</p>
         </div>
-
-        <table class="table table-borderless">
-          <thead class="criteria-head">
-            <tr>
-              <th scope="col">Inclusion Criteria</th>
-              <th scope="col">Exclusion Criteria</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Domain analysis for engineering</td>
-              <td>Papers without full text available</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>Papers not written in English</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td style="font-size: 15px;">Studies that do not present any empirical result</td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>Short papers, editorials, and summaries of keynote, or workshop</td>
-            </tr>
-          </tbody>
-        </table>
+        <p style="font-style: italic;">Developing search strings with boolean operators: </p> 
+        <p>1. </p>
+        <p>2. </p>
 
         <br>
 
         <div class="section-title">
-          <p>Quality assessment checklist</p>
+          <p>4. Selection Criteria</p>
         </div>
+        <p style="font-style: italic;">Inform your selection criteria for studies selection </p> 
+        <p>1. Paper without full text available</p>
+        <p>2. Duplicate publications</p>
+        <p>3. Papers not written in English</p>
+        <p>4. Studies that do not present any empirical result</p>
+        <p>5. Short papers, editorials, and summaries of the keynote, or workshop</p>
 
-        <table class="table table-borderless criteria-table">
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Is there a clear statement of the aims of the research?</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Was the research design appropriate to address the aim of the research?</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Was the data collected in a way that addressed the research issue?</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Is there a clear statement of findings?</td>
-            </tr>
-          </tbody>
-        </table>
+        <br>
 
-        <div class="text-center">
-            <a class="btn btn-dark next-btn" href="{{ url_for('screening') }}" role="button">Next Phase</a>
+        <div class="text-right">
+            <a class="btn btn-dark next-btn" href="{{ url_for('screening') }}" role="button">Screening Phase</a>
           </div>
       </div>
     </section>

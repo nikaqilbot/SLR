@@ -1,5 +1,6 @@
 from genericpath import exists
 from logging import exception
+from pyexpat.errors import messages
 from flask import Flask, request, redirect, url_for, render_template, session, send_file, flash, abort
 from numpy import result_type, string_, unicode_
 from werkzeug.utils import secure_filename
@@ -19,20 +20,20 @@ import spacy
 import zipfile
 
 # create the Flask app
-app = Flask(__name__, static_url_path="", static_folder="static")
-# app = Flask(__name__)
+# app = Flask(__name__, static_url_path="", static_folder="static")
+app = Flask(__name__)
 
 import secrets
 secret_string = secrets.token_urlsafe(16)
 app.secret_key = secret_string
 
-nlp = spacy.load(r"en_core_web_sm")
+nlp = spacy.load(r"en_core_web_lg")
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
-img_dir = r'/home/slr/SLR/static/assets/img'
-# img_dir = r'/static/assets/img'
+# img_dir = r'/home/slr/SLR/static/assets/img'
+img_dir = r'/static/assets/img'
 
 @app.route('/query-example')
 def query_example():
@@ -52,31 +53,31 @@ def index():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('404.html'), 404
+    return render_template('404.html', messages = error), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('500.html'), 500
+    return render_template('500.html', messages = error), 500
 
 @app.route('/500')
 def error500():
     abort(500)
 
-@app.route('/error-sml')
-def error_sml():
-    return render_template('error_sml.html')
+@app.route('/error-sml/<error>')
+def error_sml(error):
+    return render_template('error_sml.html', messages = error)
 
-@app.route('/error-uc')
-def error_uc():
-    return render_template('error_uc.html')
+@app.route('/error-uc/<error>')
+def error_uc(error):
+    return render_template('error_uc.html', messages = error)
 
-@app.route('/error-upload')
-def error_upload():
-    return render_template('error_upload.html')
+@app.route('/error-upload/<error>')
+def error_upload(error):
+    return render_template('error_upload.html', messages = error)
 
-@app.route('/error-assess')
-def error_assess():
-    return render_template('error_assess.html')
+@app.route('/error-assess/<error>')
+def error_assess(error):
+    return render_template('error_assess.html', messages = error)
 
 @app.route('/messages/<int:idx>')
 def message(idx):
@@ -86,18 +87,9 @@ def message(idx):
     except IndexError:
         abort(404)
 
-@app.route('/planning')
-def planning():
-    # session.clear()
-    string_exists = False
-    generated_string = ''
-    if(session.get('string_exists', None)):
-        generated_string = session.get('generated_string', None)
-        # print(session.get('string_exists', None) , ' ', generated_string)
-        string_exists = True
-
-    session['string_exists'] = string_exists
-    return render_template('planning.html', string_exists = string_exists, generated_string=generated_string)
+@app.route('/preparation')
+def preparation():
+    return render_template('preparation.html')
 
 @app.route('/gen-string', methods = ['GET', 'POST'])
 def gen_string():
@@ -112,7 +104,7 @@ def gen_string():
     session['string_exists'] = True
     session['generated_string'] = result
 
-    return redirect(url_for('planning'))
+    return redirect(url_for('preparation'))
 
 @app.route('/screening')
 def screening():
@@ -140,12 +132,16 @@ def retrieve_output():
     if(session.get('trained_filename', None)):
         trained_filename = session.get('trained_filename', None)
         filename_exists = True
-        result = pd.read_excel(os.path.join(uploads_dir, trained_filename))
+        result = pd.read_csv(os.path.join(uploads_dir, trained_filename))
         result = result.to_json(orient='records')
         result = json.loads(result)
         
     session['filename'] = filename
     return render_template('retrieve-output.html', filename_exists = filename_exists, posts = result)
+
+@app.route('/execution')
+def execution():
+    return render_template('execution.html')
 
 @app.route('/assess')
 def assess():
@@ -317,7 +313,7 @@ def extract():
 
         return redirect(url_for('extraction'))
     except Exception as e:
-        return redirect(url_for('error_assess'))
+        return redirect(url_for('error_assess', error = e))
 
 @app.route('/uploader/<page>', methods = ['GET', 'POST'])
 def uploader(page):
@@ -338,9 +334,9 @@ def uploader(page):
                 session['filename'] = secure_filename(request.files.getlist('file')[0].filename)
                 return redirect(url_for('upload_assess'))
             else:
-                return redirect(url_for('planning'))
+                return redirect(url_for('preparation'))
     except Exception as e:
-        return redirect(url_for('error_upload'))
+        return redirect(url_for('error_upload', error = e))
                 
 @app.route('/upload-retrieve', methods = ['GET', 'POST'])
 def upload_retrieve():
@@ -358,19 +354,19 @@ def upload_retrieve():
         dfAll = dfAll[dfAll['Publication Year'].notna()].copy()
         dfAll = dfAll[dfAll['Article Title'].notna()].copy()
         dfAll = dfAll[dfAll['Abstract'].notna()].copy()
-        dfAll.to_excel(uploads_dir + '/' + 'cleaned_' + filename, index = False)
+        new_filename = filename.replace('.xls', '_cleaned.csv')
+        dfAll.to_csv(uploads_dir + '/' + new_filename, index = False)
 
         session['cleaned_tuple'] = (initial, miss_year, miss_title, miss_abstract, missing, cleaned)
-        session['cleaned_file'] = 'cleaned_' + filename
+        session['cleaned_file'] = new_filename
 
         return redirect(url_for('retrieve'))
     except Exception as e:
-        return redirect(url_for('error_uc'))
+        return redirect(url_for('error_uc', error = e))
 
 @app.route('/upload-filter', methods = ['GET', 'POST'])
 def upload_filter():
     try:
-
         input_filename = session.get('input_filename', None)
         df = pd.read_csv(os.path.join(uploads_dir, input_filename), encoding='latin')
         input_file = input_filename.replace('.csv', '_input.csv')
@@ -386,7 +382,7 @@ def upload_filter():
 
         return redirect(url_for('filter'))
     except Exception as e:
-        return redirect(url_for('error_sml'))
+        return redirect(url_for('error_sml', error = e))
 
 @app.route('/upload-assess', methods = ['GET', 'POST'])
 def upload_assess():
@@ -394,29 +390,25 @@ def upload_assess():
         filename = session.get('filename', None)
 
         assessed_file = ''
-        print('test1: ')
         if filename.split('.')[1] == 'xlsx':
             df = pd.read_excel(os.path.join(uploads_dir, filename))
             assessed_file = filename.replace('.xlsx', '_assessed.xlsx')
             df.to_excel(os.path.join(uploads_dir, assessed_file), index=False)
         elif filename.split('.')[1] == 'csv':
             df = pd.read_csv(os.path.join(uploads_dir, filename), encoding='latin')
-            print('test3: ')
             assessed_file = filename.replace('.csv', '_assessed.csv')
-            print('test4: ')
             df.to_csv(os.path.join(uploads_dir, assessed_file), index=False)
-            print('test5: ')
 
         session['assessed_file'] = assessed_file
 
         return redirect(url_for('assess'))
      
     except Exception as e:
-        return redirect(url_for('error_assess'))
+        return redirect(url_for('error_assess', error = e))
 
 @app.route('/downloader/<page>')
 def downloader (page):
-    if page == 'planning':
+    if page == 'home':
         path = r'static/assets/How-To-SLR.pdf'
         return send_file(path, as_attachment=True)
     if page == 'retrieve':
@@ -470,7 +462,7 @@ def LDA():
         cleaned_file = session.get('cleaned_file', None)
         component = session.get('topic', None)
 
-        dfAll = pd.read_excel(os.path.join(uploads_dir, cleaned_file))
+        dfAll = pd.read_csv(os.path.join(uploads_dir, cleaned_file))
         cv = CountVectorizer(max_df = 0.9, min_df=2)
         documents = dfAll['Abstract'].values
         dtm = cv.fit_transform(documents)
@@ -483,15 +475,15 @@ def LDA():
         df_new.rename(columns={'Publication Year': 'Year'}, inplace=True)
         df_new.rename(columns={'Article Title': 'Title'}, inplace=True)
         df_new.index.name = 'Index'
-        trained_filename = cleaned_file.replace('.xls', '') + '_trained.xlsx'
-        df_new.to_excel(os.path.join(uploads_dir, trained_filename))
+        trained_filename = cleaned_file.replace('.csv', '') + '_trained.csv'
+        df_new.to_csv(os.path.join(uploads_dir, trained_filename))
 
         session['trained_filename'] = trained_filename
 
         return redirect(url_for('retrieve_output'))
 
     except Exception as e:
-        return(redirect(url_for('error_uc')))
+        return(redirect(url_for('error_uc', error = e)))
 
 @app.route('/filter')
 def filter():
@@ -509,12 +501,12 @@ def supervised():
 @app.route('/RF')
 def RF():
     try:
-        input_file = session.get('input_file', None)
         training_file = session.get('training_file', None)
+        input_file = session.get('input_file', None)
 
-        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
-        X = dfInput.iloc[:, :-1]
-        y = dfInput.iloc[:, -1]
+        dfTraining = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        X = dfTraining.iloc[:, :-1]
+        y = dfTraining.iloc[:, -1]
 
         cv = CountVectorizer()
         X['Abstract'].fillna(' ', inplace=True)
@@ -527,7 +519,7 @@ def RF():
         classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
         classifier.fit(feat_arr, y)
 
-        dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
         X2 = dfInput.iloc[:, :-1]
         y2 = dfInput.iloc[:, -1]
 
@@ -544,7 +536,7 @@ def RF():
         predict_df['Predict'] = predict
         predict_df = predict_df[predict_df['Predict'] == 1]
         predict_df.index.name = 'Index'
-        predict_file = training_file.replace('training', 'predict')
+        predict_file = input_file.replace('input', 'predict')
         predict_df.to_csv(os.path.join(uploads_dir, predict_file))
         
         session['predict_filename'] = predict_file
@@ -552,7 +544,7 @@ def RF():
         return redirect(url_for('filter_output'))
 
     except Exception as e:
-        return(redirect(url_for('error_sml')))
+        return(redirect(url_for('error_sml', error = e)))
 
 @app.route('/NB')
 def NB():

@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -88,12 +89,21 @@
                 <p style="font-size: 20px">SLR-AT is a prototype developed as a proof of concept for SLR-AT Framework. The framework consists of phases needed to conduct SLR using automated approach.</p>
             </div>
         </div>
+        <div class="row">
+          <div class="col-md-6 d-flex justify-content-center">
+          </div>
+          <div class="col-md-6">
+            <p style="font-size: 20px">Please download the guide on how to use SL at:</p>
+          </div>
+        </div>
         
         <br><br><br>
 
+
         <div class="text-right">
-            <a class="btn btn-dark next-btn" href="{{ url_for('planning') }}" role="button">Next</a>
-          </div>
+          <a class="btn btn-dark next-btn" href="{{ url_for('downloader', page='home') }}" role="button">Download</a>
+          <a class="btn btn-dark next-btn" href="{{ url_for('preparation') }}" role="button">Next</a>
+        </div>
       </div>
     </section>
     </div>

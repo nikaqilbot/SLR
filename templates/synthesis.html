@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -120,7 +121,7 @@
   function goBack() {
     window.location.href = "{{ url_for('downloader', page='synthesis') }}";
     setTimeout(function(){
-            window.location.href = '{{ url_for("planning") }}';
+            window.location.href = '{{ url_for("index") }}';
         }, 1000);
   }
   </script>

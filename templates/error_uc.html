@@ -5,10 +5,12 @@
 <script>
         setTimeout(function(){
             window.location.href = '{{ url_for("retrieve") }}';
-        }, 5000);
+        }, 8000);
     </script>
-        <h1>{% block title %} Processing Error {% endblock %}</h1>
-        <p style="color: red; font-size: 30px;">OOOOPS! Please follow the process as defined!</p>
+        {% block title %} 
+        <h1>Processing Error: {{ messages }}</h1>
+        {% endblock %}
 
-        <p style="color: blue; font-size: 25px;">You will be redirected in a while!</p>
+        <p style="color: red; font-size: 20px;">OOOOPS! Please follow the process as defined!</p>
+        <p style="color: blue; font-size: 15px;">You will be redirected in a while!</p>
 {% endblock %}

@@ -247,6 +247,15 @@ body {
     border-radius: 5px;
   }
 
+  .dummy-btn {
+    border-color: black;
+    background-color: grey; 
+    color: #FFE128;
+    border-radius: 5px;
+    width: 400px;
+    pointer-events: none;
+  }
+
   .next-btn {
     background-color:#FFE128; 
     color: black;
@@ -266,7 +275,7 @@ body {
     font-weight: bold;
   }
   .selection-btn-desc {
-    color: blue;
+    color: black;
     margin-top: 15px; 
     font-size: 14px;
   }

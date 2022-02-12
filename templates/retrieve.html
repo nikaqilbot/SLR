@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -68,8 +69,9 @@
   </header><!-- End Header -->
   
   <div class="jumbotron jumbo">
-    <h1 class="display-4 ml-auto text-center jumbo-title">Retrieve Studies</h1>
-    <hr style="color: #FFE128; height: 10px; width: 400px;" class="mx-auto">
+    <h1 class="display-4 ml-auto text-center jumbo-title">RETRIEVE STUDIES</h1>
+    <hr style="color: #FFE128; height: 10px; width: 800px;" class="mx-auto">
+    <h6 class="display-4 ml-auto text-center jumbo-title" style="margin-top: -90px; font-size: 40px">TOPIC EXTRACTION</h6>
   </div>
 
   <main id="main">

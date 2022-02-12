@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
   
-    <title>Planning</title>
+    <title>Screening</title>
     <meta content="" name="description">
   
     <!-- Favicons -->
@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
           <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -68,8 +69,8 @@
   </header><!-- End Header -->
   
   <div class="jumbotron jumbo">
-    <h1 class="display-4 ml-auto text-center jumbo-title">Screen The Review</h1>
-    <hr style="color: #FFE128; height: 10px; width: 400px;" class="mx-auto">
+    <h1 class="display-4 ml-auto text-center jumbo-title">SCREENING PHASE</h1>
+    <hr style="color: #FFE128; height: 10px; width: 800px;" class="mx-auto">
   </div>
 
   <main id="main">
@@ -77,14 +78,51 @@
     <section id="contact" class="contact">
       <div class="container" data-aos="fade-up">
 
-        <p class="selection-title">Choose your preferred approach for Filter Studies process: </p>
+        <p>Screening phase involves the search of studies in the digital libraries and selecting relevant studies</p>
+
+        <div class="section-title">
+          <p>RETRIEVE STUDIES</p>
+        </div>
+        <p style="font-style: italic; margin-top: -15px;">Distinguishing relevant studies by employing the search strategy described in the protocol</p>
+
+        <p>Here are the available automate approach for the <strong>Retrieve Studies</strong> process:</p>
+        <p style="font-style: italic; margin-top: -15px;">Identifying the major topic in a body of literature without any manual classification</p>
+
         <br>
-        <a class="btn btn-dark selection-btn" href="{{ url_for('filter') }}" role="button">Supervised Machine Learning</a>
-        <p class="selection-btn-desc">Classify records as "relevant" or "not relevant" by training a machine learning model on a manually classified set of records</p>
-        <br><br>
-        <p class="selection-title">Choose your preferred approach for Retrieve Studies process: </p>
-        <a class="btn btn-dark selection-btn" href="{{ url_for('retrieve') }}" role="button">Unsupervised Clustering</a>
-        <p class="selection-btn-desc">Classify records as "relevant" or "not relevant" using a manually classified set of relevant records as seed values</p>
+        <button class="btn dummy-btn">Topic Extraction (Unsupervised Clustering)</button>
+        <button class="btn dummy-btn" style="margin-left: 40px;">Visualisation</button>
+
+        <br><br><br>
+        <div class="section-title">
+          <p>FILTER STUDIES</p>
+        </div>
+        <p style="font-style: italic; margin-top: -15px;">Selecting the relevant studies based on titles and abstract of studies concerning the defined inclusion and exclusion criteria</p>
+
+        <p>Here are the available automate approach for the <strong>Filter Studies</strong> process:</p>
+
+        <br>
+        <table class="table table-sm table-light display form-horizontal">
+          <thead>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><button class="btn dummy-btn">Supervised Clustering (Unsupervised Clustering)</button>
+                  </td>
+                  <td><p class="selection-btn-desc">Classify records as "relevant" or "not relevant" by training a machine learning model on a manually classified set of records</p>
+                  </td>
+              </tr>
+              <tr>
+                  <td><button class="btn dummy-btn">Supervised Machine Learning</button></td>
+                  <td><p class="selection-btn-desc">Classify records as "relevant" or "not relevant" by training a machine learning model on a manually classified set of records</p>
+                  </td>
+              </tr>
+          </tbody>      
+      </table>
+
+      <br>
+      <div class="text-right">
+        <a class="btn btn-dark next-btn" href="{{ url_for('retrieve') }}" role="button">Retrieve Phase</a>
+      </div>
       </div>
     </section>
 

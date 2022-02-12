@@ -44,20 +44,21 @@
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('planning') }}">Planning</a></li>
-          <li class="drop-down"><a href="">Screening</a>
+          <li><a href="{{ url_for('preparation') }}">Preparation</a></li>
+          <li class="drop-down"><a href="{{ url_for('screening') }}">Screening</a>
             <ul>
               <li><a href="{{ url_for('retrieve') }}">Retrieve</a></li>
               <li><a href="{{ url_for('filter') }}">Filter</a></li>
             </ul>
           </li>
-          <li class="drop-down"><a href="">Execution</a>
-                    <ul>
-                      <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
-                      <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
-                      <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
-                    </ul>
-                  </li>
+          <li class="drop-down"><a href="{{ url_for('execution') }}">Execution</a>
+            <ul>
+              <li><a href="{{ url_for('assess') }}">Assess Studies</a></li>
+              <li><a href="{{ url_for('extraction') }}">Extract Data</a></li>
+              <li><a href="{{ url_for('synthesis') }}">Synthesis</a></li>
+            </ul>
+          </li>
+          <li><a href="{{ url_for('index') }}">Documentation</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
@@ -80,8 +81,14 @@
             <div class="section-title">
               <p>Quality Assessment of Studies</p>
             </div>
+            <p>1. Is there a clear statement of the aims of the research?</p>
+            <p>2. Was the research design appropriate to address the aim of the research?</p>
+            <p>3. Was the data collected in a way that addressed the research issue?</p>
+            <p>4. Is there a clear statement of findings?</p>
+            <p>5. Do the conclusion relate to the aim of the purposed of the study? Are they reliable?</p>
 
-            <p>Upload Data (Standard CSV or XLSX format) :</p>
+            <br>
+            <p>Upload Data (Standard CSV format) :</p>
             <form action="{{ url_for('uploader', page='assess') }}" method="POST" enctype="multipart/form-data">
                 <div class="input-group">
                 <div class="custom-file">
@@ -97,7 +104,7 @@
             <br><br>
             
             <div class="text-center">
-              <a class="btn btn-dark next-btn" href="{{ url_for('extract') }}" role="button">Next Phase</a>
+              <a class="btn btn-dark next-btn" href="{{ url_for('extract') }}" role="button">Extract Phase</a>
             </div>
       </div>
     </section>
