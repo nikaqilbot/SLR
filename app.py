@@ -14,14 +14,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 os.environ['MPLCONFIGDIR'] = os.getcwd() + "/configs/"
 import matplotlib.pyplot as plt
+import platform
 import numpy as np
+import zipfile
 from wordcloud import WordCloud, STOPWORDS
 import spacy
-import zipfile
 
 # create the Flask app
-app = Flask(__name__, static_url_path="", static_folder="static")
-# app = Flask(__name__)
+if platform.system() == 'Linux' : 
+    app = Flask(__name__, static_url_path="", static_folder="static")
+elif platform.system() == 'Windows' :
+    app = Flask(__name__)
 
 import secrets
 secret_string = secrets.token_urlsafe(16)
@@ -32,8 +35,8 @@ uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
-img_dir = r'/home/slr/SLR/static/assets/img'
-# img_dir = r'/static/assets/img'
+# img_dir = r'/home/slr/SLR/static/assets/img'
+img_dir = r'/static/assets/img'
 
 @app.route('/query-example')
 def query_example():
@@ -755,6 +758,8 @@ def filter_output():
         predict_filename = session.get('predict_filename', None)
         filename_exists = True
         result = pd.read_csv(os.path.join(uploads_dir, predict_filename), encoding='latin')
+        result.columns = [col.replace(" " , "") for col in result.columns]
+        print("New Result columns: " , result.columns)
         result = result.to_json(orient='records')
         result = json.loads(result)
         

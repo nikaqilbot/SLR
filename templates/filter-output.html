@@ -102,7 +102,20 @@
                                     {% for post in posts %}
                                         <tr>
                                             <td>{{post.Index}}</td>
-                                            <td>{{post.Year}}</td>
+
+                                            {% if post.Year %}
+                                              <td>{{post.Year}}</td>
+                                            {% elif post.PublicationYear %}
+                                              <td>{{ post.PublicationYear }}</td>
+                                            {% endif %}
+
+                                            {% if post.Title %}
+                                            <td>{{post.Title}}</td>
+                                            {% elif post.ArticleTitle %}
+                                              <td>{{post.ArticleTitle}}</td>
+                                            {% endif %}
+
+
                                             <td>{{post.Title}}</td>
                                             <td>{{post.Authors}}</td>
                                             <td>{{post.Predict}}</td>
