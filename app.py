@@ -327,8 +327,12 @@ def uploader(page):
                 session['filename'] = secure_filename(request.files.getlist('file')[0].filename)
                 return redirect(url_for('upload_retrieve'))
             elif page == 'filter':
-                session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
-                session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+                # session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
+                # session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+
+                session['training_filename'] = secure_filename(request.files.getlist('file')[0].filename)
+                session['input_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+                
                 return redirect(url_for('upload_filter'))
             elif page == 'assess':
                 session['filename'] = secure_filename(request.files.getlist('file')[0].filename)
@@ -498,45 +502,119 @@ def supervised():
     elif technique == 'NB':
         return redirect(url_for('NB'))
 
+# @app.route('/RF')
+# def RF():
+#     try:
+#         training_file = session.get('training_file', None)
+#         input_file = session.get('input_file', None)
+
+#         dfTraining = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+#         X = dfTraining.iloc[:, :-1]
+#         y = dfTraining.iloc[:, -1]
+
+#         cv = CountVectorizer()
+#         X['Abstract'].fillna(' ', inplace=True)
+#         X_Abstract = cv.fit_transform(X['Abstract'])
+#         X['Authors'].fillna(' ', inplace=True)
+#         X_Authors = cv.fit_transform(X['Authors'])
+
+#         feat_arr = []
+#         feat_arr = np.append(X_Abstract.toarray(), X_Authors.toarray(), 1)
+#         classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
+#         classifier.fit(feat_arr, y)
+
+#         dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
+#         X2 = dfInput.iloc[:, :-1]
+#         y2 = dfInput.iloc[:, -1]
+
+#         X2['Abstract'].fillna(' ', inplace=True)
+#         X2_Abstract = cv.fit_transform(X2['Abstract'])
+#         X2['Authors'].fillna(' ', inplace=True)
+#         X2_Authors = cv.fit_transform(X2['Authors'])
+
+#         feat_arr_2 = []
+#         feat_arr_2 = np.append(X2_Abstract.toarray(), X2_Authors.toarray(), 1)
+#         predict = classifier.predict(feat_arr_2)
+
+#         predict_df = X2.copy()
+#         predict_df['Predict'] = predict
+#         predict_df = predict_df[predict_df['Predict'] == 1]
+#         predict_df.index.name = 'Index'
+#         predict_file = input_file.replace('input', 'predict')
+#         predict_df.to_csv(os.path.join(uploads_dir, predict_file))
+        
+#         session['predict_filename'] = predict_file
+
+#         return redirect(url_for('filter_output'))
+
+#     except Exception as e:
+#         return(redirect(url_for('error_sml', error = e)))
+
 @app.route('/RF')
 def RF():
     try:
         training_file = session.get('training_file', None)
         input_file = session.get('input_file', None)
 
-        dfTraining = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
-        X = dfTraining.iloc[:, :-1]
-        y = dfTraining.iloc[:, -1]
+        dfTrain = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
 
-        cv = CountVectorizer()
+        X = dfTrain.iloc[:, :-1]
+        y = dfTrain.loc[:, 'Relevant']
+
+        cv_abs1 = CountVectorizer()
         X['Abstract'].fillna(' ', inplace=True)
-        X_Abstract = cv.fit_transform(X['Abstract'])
+        X_Abstract = cv_abs1.fit_transform(X['Abstract'])
+        cv_auth1 = CountVectorizer()
         X['Authors'].fillna(' ', inplace=True)
-        X_Authors = cv.fit_transform(X['Authors'])
+        X_Authors = cv_auth1.fit_transform(X['Authors'])
 
         feat_arr = []
         feat_arr = np.append(X_Abstract.toarray(), X_Authors.toarray(), 1)
         classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
         classifier.fit(feat_arr, y)
 
-        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
-        X2 = dfInput.iloc[:, :-1]
-        y2 = dfInput.iloc[:, -1]
+        dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        X2 = dfInput.iloc[:, :]
 
+        cv_abs2 = CountVectorizer()
         X2['Abstract'].fillna(' ', inplace=True)
-        X2_Abstract = cv.fit_transform(X2['Abstract'])
+        X2_Abstract = cv_abs2.fit_transform(X2['Abstract'])
+        cv_auth2 = CountVectorizer()
         X2['Authors'].fillna(' ', inplace=True)
-        X2_Authors = cv.fit_transform(X2['Authors'])
+        X2_Authors = cv_auth2.fit_transform(X2['Authors'])
 
+        #Abstract
+        existed_column = []
+        for index, (k,item) in enumerate(cv_abs1.vocabulary_.items()):
+            if k in cv_abs2.vocabulary_.keys():
+                existed_column.append((index, list(cv_abs2.vocabulary_.keys()).index(k)))
+
+        X2_Abstract_filtered = np.zeros((X2.shape[0] , X_Abstract.toarray().shape[1]))
+        for i,j in existed_column:
+            X2_Abstract_filtered[: , i] = X2_Abstract[: , j].toarray().flatten()
+
+        #Authors
+        existed_column = []
+        for index, (k,item) in enumerate(cv_auth1.vocabulary_.items()):
+            if k in cv_auth2.vocabulary_.keys():
+                existed_column.append((index, list(cv_auth2.vocabulary_.keys()).index(k)))
+
+        X2_Authors_filtered = np.zeros((X2.shape[0] , X_Authors.toarray().shape[1]))
+        for i,j in existed_column:
+            if i > X2_Authors.toarray().shape[1]:
+                continue
+            X2_Authors_filtered[: , i] = X2_Authors[: , j].toarray().flatten()
+            
         feat_arr_2 = []
-        feat_arr_2 = np.append(X2_Abstract.toarray(), X2_Authors.toarray(), 1)
+        # feat_arr_2 = np.append(X2_Abstract.toarray(), X2_Authors.toarray(), 1)
+        feat_arr_2 = np.append(X2_Abstract_filtered, X2_Authors_filtered, 1)
         predict = classifier.predict(feat_arr_2)
 
         predict_df = X2.copy()
         predict_df['Predict'] = predict
         predict_df = predict_df[predict_df['Predict'] == 1]
         predict_df.index.name = 'Index'
-        predict_file = input_file.replace('input', 'predict')
+        predict_file = training_file.replace('training', 'predict')
         predict_df.to_csv(os.path.join(uploads_dir, predict_file))
         
         session['predict_filename'] = predict_file
@@ -635,7 +713,6 @@ def NB():
 
         X2_Abstract_filtered = np.zeros((X2.shape[0] , X_Abstract.toarray().shape[1]))
         for i,j in existed_column:
-        #     print(i,j)
             X2_Abstract_filtered[: , i] = X2_Abstract[: , j].toarray().flatten()
 
         #Authors
@@ -646,7 +723,6 @@ def NB():
 
         X2_Authors_filtered = np.zeros((X2.shape[0] , X_Authors.toarray().shape[1]))
         for i,j in existed_column:
-        #     print(i,j)
             if i > X2_Authors.toarray().shape[1]:
                 continue
             X2_Authors_filtered[: , i] = X2_Authors[: , j].toarray().flatten()
