@@ -333,8 +333,8 @@ def uploader(page):
                 # session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
                 # session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
 
-                session['training_filename'] = secure_filename(request.files.getlist('file')[0].filename)
-                session['input_filename'] = secure_filename(request.files.getlist('file')[1].filename)
+                session['input_filename'] = secure_filename(request.files.getlist('file')[0].filename)
+                session['training_filename'] = secure_filename(request.files.getlist('file')[1].filename)
                 
                 return redirect(url_for('upload_filter'))
             elif page == 'assess':
