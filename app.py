@@ -559,7 +559,7 @@ def RF():
         training_file = session.get('training_file', None)
         input_file = session.get('input_file', None)
 
-        dfTrain = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
+        dfTrain = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
 
         X = dfTrain.iloc[:, :-1]
         y = dfTrain.loc[:, 'Relevant']
@@ -576,7 +576,7 @@ def RF():
         classifier = RandomForestClassifier(n_estimators = 10, criterion = 'entropy', random_state = 0)
         classifier.fit(feat_arr, y)
 
-        dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
         X2 = dfInput.iloc[:, :]
 
         cv_abs2 = CountVectorizer()
