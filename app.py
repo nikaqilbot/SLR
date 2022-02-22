@@ -35,8 +35,8 @@ uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 downloads_dir = os.path.join(app.instance_path, 'downloads')
 os.makedirs(downloads_dir, exist_ok=True)
-# img_dir = r'/home/slr/SLR/static/assets/img'
-img_dir = r'/static/assets/img'
+img_dir = r'/home/slr/SLR/static/assets/img'
+# img_dir = r'/static/assets/img'
 
 @app.route('/query-example')
 def query_example():
@@ -617,8 +617,8 @@ def RF():
         predict_df['Predict'] = predict
         predict_df = predict_df[predict_df['Predict'] == 1]
         predict_df.index.name = 'Index'
-        predict_file = training_file.replace('training', 'predict')
-        predict_df.to_csv(os.path.join(uploads_dir, predict_file))
+        predict_file = 'predicted.csv'
+        predict_df.to_csv(os.path.join(uploads_dir, predict_file), index = False)
         
         session['predict_filename'] = predict_file
 
@@ -681,7 +681,7 @@ def NB():
         input_file = session.get('input_file', None)
         training_file = session.get('training_file', None)
 
-        dfTrain = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
+        dfTrain = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
 
         X = dfTrain.iloc[:, :-1]
         y = dfTrain.loc[:, 'Relevant']
@@ -698,7 +698,7 @@ def NB():
         classifier = GaussianNB()
         classifier.fit(feat_arr, y)
 
-        dfInput = pd.read_csv(os.path.join(uploads_dir, training_file), encoding='latin')
+        dfInput = pd.read_csv(os.path.join(uploads_dir, input_file), encoding='latin')
         X2 = dfInput.iloc[:, :]
 
         cv_abs2 = CountVectorizer()
@@ -739,8 +739,8 @@ def NB():
         predict_df['Predict'] = predict
         predict_df = predict_df[predict_df['Predict'] == 1]
         predict_df.index.name = 'Index'
-        predict_file = training_file.replace('training', 'predict')
-        predict_df.to_csv(os.path.join(uploads_dir, predict_file))
+        predict_file = 'predicted.csv'
+        predict_df.to_csv(os.path.join(uploads_dir, predict_file), index = False)
         
         session['predict_filename'] = predict_file
 
